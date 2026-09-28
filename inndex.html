@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Piano Words: Cyber Arcade</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030712;--panel:#0f172a;--txt:#f8fafc;--acc:#00f0ff;--bad:#ff0055;--good:#00ff66;--gold:#ffea00;--gem:#a855f7;--bd:#334155;--f:'Press Start 2P',monospace;--lane:rgba(0,240,255,.3);--glow:#00f0ff}
+*{box-sizing:border-box;margin:0;padding:0;user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:var(--f),monospace;font-size:11px}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.w1{background:radial-gradient(circle,#09122C,#030712)}
+.w2{background:radial-gradient(circle,#2A085C,#080214);--lane:rgba(255,0,85,.4);--glow:#ff0055}
+.w3{background:radial-gradient(circle,#002B19,#000B05);--lane:rgba(0,255,102,.4);--glow:#00ff66}
+.w4{background:radial-gradient(circle,#4A2800,#0F0800);--lane:rgba(255,234,0,.4);--glow:#ffea00}
+.w5{background:radial-gradient(circle,#3B0033,#0A000A);--lane:rgba(168,85,247,.4);--glow:#a855f7}
+.crt::after{content:"";position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0) 50%,rgba(0,0,0,.3) 50%);background-size:100% 4px;pointer-events:none;z-index:999}
+.box{background:var(--panel);border:3px solid var(--bd)}
+.btn{font-family:var(--f);background:var(--panel);color:var(--txt);border:3px solid var(--bd);padding:8px 10px;cursor:pointer;font-size:.5rem;text-transform:uppercase}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.p{background:var(--acc);color:#000;border-color:#fff}.btn.d{background:var(--bad);border-color:#f8a}.btn.g{background:var(--gem);border-color:#e9d5ff}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;text-align:center}
+#top{position:fixed;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between;z-index:10}
+#badge{cursor:pointer;background:var(--panel);border:2px solid var(--bd);padding:6px 8px;font-size:.5rem}
+#hdr{position:absolute;top:0;left:0;right:0;height:50px;background:rgba(15,23,42,.95);border-bottom:3px solid var(--bd);display:flex;justify-content:space-between;align-items:center;padding:0 8px;z-index:15;font-size:.45rem;gap:6px}
+#track{position:absolute;top:50px;bottom:84px;left:50%;transform:translateX(-50%);width:min(100%,480px);display:grid;grid-template-columns:repeat(4,1fr);border:0 solid var(--lane);border-width:0 3px;overflow:hidden}
+.lane{position:relative;border-right:2px dashed var(--lane)}.lane:last-child{border:0}
+.tile{position:absolute;width:90%;left:5%;height:52px;background:#0f172a;border:3px solid var(--glow);box-shadow:0 0 10px var(--glow);display:flex;align-items:center;justify-content:center;font-size:.55rem;text-shadow:2px 2px #000;padding:2px;word-break:break-all}
+.tile.t{border-color:var(--gold);animation:pulse .6s infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 22px var(--gold)}}
+.m{color:var(--good)}
+#inw{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(3,7,18,.95);border-top:3px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;z-index:5}
+#inp{width:min(90%,400px);padding:10px;font-size:.85rem;font-family:var(--f);border:3px solid var(--acc);background:var(--bg);color:#fff;outline:none;text-align:center;user-select:text}
+#inp.err{border-color:var(--bad);animation:sh .15s}
+.modal{position:fixed;inset:0;background:rgba(3,7,18,.9);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.mc{width:min(92%,440px);max-height:80vh;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:16px;text-align:center}
+.in{width:100%;padding:8px;font-family:var(--f);background:var(--bg);border:2px solid var(--bd);color:#fff;font-size:.6rem;user-select:text}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+.sc{background:var(--panel);border:2px solid var(--bd);padding:6px}.sc b{display:block;font-size:.75rem;color:var(--gold);margin-bottom:3px}.sc span{font-size:.4rem}
+.row{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:2px solid var(--bd);padding:8px;gap:8px;text-align:left;font-size:.5rem}
+@keyframes sh{25%{transform:translate(-4px,3px)}75%{transform:translate(4px,-3px)}}
+.shake{animation:sh .15s}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:20}
+.fl{position:fixed;font-size:.65rem;color:var(--gold);pointer-events:none;z-index:100;animation:up .6s forwards;text-shadow:2px 2px #000}
+@keyframes up{to{opacity:0;transform:translateY(-28px)}}
+/* bigger icons */
+#top .btn{font-size:1.1rem;padding:10px 12px}
+#badge{font-size:.65rem;padding:8px 10px}
+#bAv{font-size:1.7rem;vertical-align:middle}
+#hdr{height:64px}
+#track{top:64px}
+#hdr .btn{font-size:1.4rem;padding:8px 14px}
+#hdr{font-size:.55rem}
+#lives{font-size:1.3rem}
+#start .btn{font-size:.85rem}
+#pAv{font-size:3rem !important}
+.row .btn{font-size:.7rem;padding:8px 10px}
+.mc .btn{font-size:.7rem;padding:10px 12px}
+</style></head>
+<body class="crt w1">
+<canvas id="fx"></canvas>
+<div id="top"><div style="display:flex;gap:6px"><button class="btn" onclick="op('taskM')">📜 Tasks</button><button class="btn" onclick="op('shopM')">🛒 Shop</button><button class="btn" onclick="op('setM')">⚙️</button></div>
+<div id="badge" onclick="op('accM')"><span id="bAv">🤖</span> <span id="bName">PLAYER</span> <span style="color:var(--gem)">💎<span id="bGem">0</span></span></div></div>
+
+<div class="screen" id="start">
+<h1 style="color:var(--acc);font-size:1.1rem;line-height:1.5;text-shadow:3px 3px #000">PIANO WORDS<br>CYBER ARCADE</h1>
+<p style="font-size:.5rem;color:var(--gold)">TYPE THE WORDS • BEAT THE CLOCK • BUILD COMBOS</p>
+<div class="grid" style="width:min(90%,380px)"><div class="sc"><b id="hL">1</b><span>BEST LVL</span></div><div class="sc"><b id="hS">0</b><span>HIGH SCORE</span></div><div class="sc"><b id="hW">0</b><span>WORDS</span></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn p" style="padding:12px 16px" onclick="start(1)">🚀 Start</button><button class="btn g" style="padding:12px 16px" onclick="tutorial()">🤖 Tutorial</button></div>
+</div>
+
+<div id="game" style="display:none">
+<div id="hdr"><div style="display:flex;gap:8px;flex-wrap:wrap"><span>LVL <b id="lv" style="color:var(--acc)">1</b></span><span>SCORE <b id="sc" style="color:var(--gold)">0</b></span><span id="cl" style="color:var(--good)">0/15</span><span id="lives">❤️❤️❤️</span></div>
+<div style="display:flex;gap:5px"><button class="btn" onclick="pause()">⏸</button><button class="btn d" onclick="toLobby()">🏠</button></div></div>
+<div id="track"><div class="lane"></div><div class="lane"></div><div class="lane"></div><div class="lane"></div></div>
+<div id="inw"><div style="font-size:.45rem;color:var(--acc)" id="combo">COMBO x0</div><div id="tutMsg" style="font-size:.45rem;color:var(--gold);display:none"></div>
+<input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type word..."></div></div>
+
+<div class="modal" id="authM" style="display:flex"><div class="mc box"><h1 style="color:var(--acc);font-size:.95rem">WELCOME OPERATOR</h1><p style="font-size:.5rem;color:var(--gold)">LOGIN OR REGISTER</p>
+<input class="in" id="aN" placeholder="Username..."><input class="in" id="aP" type="password" placeholder="Password...">
+<div style="display:flex;gap:6px"><button class="btn p" style="flex:1" onclick="auth('login')">Login</button><button class="btn g" style="flex:1" onclick="auth('register')">Register</button></div><p id="aMsg" style="font-size:.45rem;color:var(--bad)"></p></div></div>
+
+<div class="modal" id="taskM"><div class="mc box"><h2 style="color:var(--gold);font-size:.75rem">📜 TASKS</h2><div id="tasks" style="display:flex;flex-direction:column;gap:6px"></div><button class="btn" onclick="cl('taskM')">Close</button></div></div>
+<div class="modal" id="shopM"><div class="mc box"><h2 style="color:var(--gem);font-size:.75rem">🛒 SHOP</h2><div style="font-size:.5rem;color:var(--gold)">💎 <span id="shG">0</span></div><div id="shop" style="display:flex;flex-direction:column;gap:6px"></div><button class="btn" onclick="cl('shopM')">Close</button></div></div>
+<div class="modal" id="accM"><div class="mc box"><h2 style="color:var(--acc);font-size:.75rem">👤 PROFILE</h2><div style="font-size:1.6rem" id="pAv">🤖</div><div id="pN" style="color:var(--gold);font-size:.7rem"></div><button class="btn d" onclick="cl('accM');op('authM');store.active=null;save()">Log out</button><button class="btn" onclick="cl('accM')">Close</button></div></div>
+<div class="modal" id="pauseM"><div class="mc box"><h1 style="color:var(--gold);font-size:1.1rem">PAUSED</h1><button class="btn p" onclick="pause()">▶ Resume</button><button class="btn d" onclick="cl('pauseM');toLobby()">🏠 Lobby</button></div></div>
+<div class="modal" id="nextM"><div class="mc box"><h1 style="color:var(--good);font-size:1rem">WORLD CLEARED!</h1><p style="font-size:.5rem;color:var(--gold)">SPEED & WORD LENGTH INCREASE</p><button class="btn p" id="nextB">🔥 Level <span id="nn">2</span></button></div></div>
+<div class="modal" id="overM"><div class="mc box"><h1 style="color:var(--bad);font-size:1.2rem">GAME OVER</h1><div class="grid"><div class="sc"><b id="fS">0</b><span>SCORE</span></div><div class="sc"><b id="fL">1</b><span>LEVEL</span></div><div class="sc"><b id="fW">0</b><span>WORDS</span></div></div><button class="btn p" onclick="cl('overM');start(1)">🔄 Retry</button><button class="btn" onclick="cl('overM');toLobby()">🏠 Lobby</button></div></div>
+<div class="modal" id="setM"><div class="mc box"><h2 style="color:var(--acc);font-size:.75rem">⚙️ SETTINGS</h2>
+<div class="row">CRT<button class="btn p" id="crtB" onclick="document.body.classList.toggle('crt');this.textContent=document.body.classList.contains('crt')?'ON':'OFF'">ON</button></div>
+<div class="row">SOUND<button class="btn p" id="sfxB" onclick="snd=!snd;this.textContent=snd?'ON':'OFF'">ON</button></div><button class="btn p" onclick="cl('setM')">Done</button></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+let ac=null,snd=true;
+function sfx(t){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;o.connect(g);g.connect(ac.destination);
+const P={kill:['square',300,800,.1],click:['triangle',600,600,.04],up:['square',400,900,.25],over:['sawtooth',300,80,.4],miss:['sawtooth',200,100,.15],life:['square',500,150,.25]}[t];
+o.type=P[0];o.frequency.setValueAtTime(P[1],n);o.frequency.linearRampToValueAtTime(P[2],n+P[3]);g.gain.setValueAtTime(.15,n);g.gain.linearRampToValueAtTime(.01,n+P[3]);o.start(n);o.stop(n+P[3])}catch(e){}}
+const WORDS={1:"bit ram cpu net key log bug web dev run pop sub var get set out try sys int hex".split(' '),2:"code data node grid sync ping hack load core flow disk file port host user loop main type".split(' '),3:"matrix system vector signal binary hacker cipher buffer kernel script python memory stream server domain socket".split(' '),4:"terminal function variable database compiler protocol overflow firewall encryption algorithm cybersecurity infrastructure".split(' ')};
+const TASKS=[{id:1,d:"Destroy 15 Tiles",t:15,r:20,k:"w"},{id:2,d:"Destroy 40 Tiles",t:40,r:50,k:"w"},{id:3,d:"Destroy 100 Tiles",t:100,r:100,k:"w"},{id:4,d:"Reach Level 2",t:2,r:40,k:"l"},{id:5,d:"Reach Level 4",t:4,r:80,k:"l"}];
+const SHOP=[{id:'a',n:"Ninja 🥷",p:30,v:"🥷"},{id:'b',n:"Alien 👾",p:50,v:"👾"},{id:'c',n:"Wizard 🧙",p:80,v:"🧙"},{id:'d',n:"Mecha 🤖",p:200,v:"🤖"}];
+let store;try{store=JSON.parse(localStorage.getItem('pw_v3'))}catch(e){}store=store||{users:{},active:null};
+function save(){try{localStorage.setItem('pw_v3',JSON.stringify(store))}catch(e){}}
+const U=()=>store.users[store.active];
+function op(i){$(i).style.display='flex';sfx('click');if(i=='taskM')rTasks();if(i=='shopM')rShop()}
+function cl(i){$(i).style.display='none';sfx('click')}
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return s}}
+async function auth(type){const n=$('aN').value.trim(),p=$('aP').value,m=$('aMsg');if(!n||!p){m.textContent="FILL BOTH FIELDS";return}const h=await hash(p);
+if(type=='register'){if(store.users[n]){m.textContent="USER EXISTS";return}store.users[n]={name:n,h,av:"🤖",hl:1,hs:0,tw:0,gems:10,claimed:[],owned:[]}}
+else if(!store.users[n]||store.users[n].h!==h){m.textContent="WRONG CREDENTIALS";return}
+store.active=n;save();m.textContent='';$('authM').style.display='none';lobby()}
+function lobby(){const u=U();if(!u){$('authM').style.display='flex';return}
+$('bAv').textContent=$('pAv').textContent=u.av;$('bName').textContent=$('pN').textContent=u.name.toUpperCase();$('bGem').textContent=u.gems;$('hL').textContent=u.hl;$('hS').textContent=u.hs;$('hW').textContent=u.tw}
+function rTasks(){const u=U();$('tasks').innerHTML=TASKS.map(t=>{const c=t.k=='w'?u.tw:u.hl,done=u.claimed.includes(t.id);return`<div class="row"><div>${t.d}<div style="font-size:.4rem;color:var(--gold);margin-top:3px">${Math.min(c,t.t)}/${t.t}</div></div>${done?'DONE':c>=t.t?`<button class="btn g" onclick="claim(${t.id})">+${t.r}💎</button>`:`<span style="color:var(--gem)">+${t.r}💎</span>`}</div>`}).join('')}
+function claim(id){const u=U(),t=TASKS.find(x=>x.id==id);if(u.claimed.includes(id))return;u.claimed.push(id);u.gems+=t.r;save();lobby();rTasks()}
+function rShop(){const u=U();$('shG').textContent=u.gems;$('shop').innerHTML=SHOP.map(s=>{const o=u.owned.includes(s.id);return`<div class="row"><div>${s.n}<div style="font-size:.4rem;color:var(--acc);margin-top:3px">${s.p}💎</div></div>${o?`<button class="btn p" onclick="eq('${s.v}')">${u.av==s.v?'ON':'EQUIP'}</button>`:`<button class="btn g" onclick="buy('${s.id}')">BUY</button>`}</div>`}).join('')}
+function buy(id){const u=U(),s=SHOP.find(x=>x.id==id);if(u.gems>=s.p&&!u.owned.includes(id)){u.gems-=s.p;u.owned.push(id);u.av=s.v;save();lobby();rShop()}}
+function eq(v){U().av=v;save();lobby();rShop()}
+
+/* FX */
+const cv=$('fx'),cx=cv.getContext('2d');let ps=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight}addEventListener('resize',rs);rs();
+function boom(x,y,c){for(let i=0;i<18;i++)ps.push({x,y,vx:(Math.random()-.5)*10,vy:(Math.random()-.5)*10,s:3+Math.random()*4|0,c,l:1})}
+(function f(){cx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.l-=.05;cx.globalAlpha=Math.max(p.l,0);cx.fillStyle=p.c;cx.fillRect(p.x|0,p.y|0,p.s,p.s)});cx.globalAlpha=1;ps=ps.filter(p=>p.l>0);requestAnimationFrame(f)})();
+function flt(x,y,t){const e=document.createElement('div');e.className='fl';e.textContent=t;e.style.left=x+'px';e.style.top=y+'px';document.body.appendChild(e);setTimeout(()=>e.remove(),600)}
+
+/* GAME */
+const G={run:false,paused:false,lvl:1,score:0,cleared:0,combo:0,lives:3,tiles:[],sp:null,lp:null,tut:false};
+const inp=$('inp');
+function start(l){G.tut=false;if(l==1){G.score=0;G.lives=3}G.lvl=l;G.cleared=0;G.combo=0;clearAll();G.run=true;G.paused=false;
+document.body.className='crt '+'w'+((l-1)%5+1);if($('crtB').textContent=='OFF')document.body.classList.remove('crt');
+$('top').style.display='none';$('start').style.display='none';$('game').style.display='block';$('tutMsg').style.display='none';
+hud();inp.value='';inp.focus();const iv=Math.max(2500-l*250,700);G.sp=setInterval(spawn,iv);G.lp=setInterval(loop,30);spawn()}
+function clearAll(){clearInterval(G.sp);clearInterval(G.lp);G.tiles.forEach(t=>t.el.remove());G.tiles=[];document.querySelectorAll('.lane').forEach(l=>l.innerHTML='')}
+function hud(){$('lv').textContent=G.lvl;$('sc').textContent=G.score;$('cl').textContent=G.cleared+'/15';$('combo').textContent='COMBO x'+G.combo;$('lives').textContent='❤️'.repeat(Math.max(G.lives,0))||'💀'}
+function spawn(){if(!G.run||G.paused||G.tut)return;const pool=WORDS[Math.min(G.lvl<3?G.lvl:G.lvl<5?3:4,4)];
+const used=G.tiles.map(t=>t.w);const opts=pool.filter(w=>!used.includes(w));if(!opts.length)return;const w=opts[Math.random()*opts.length|0];
+const busy=G.tiles.filter(t=>t.top<70).map(t=>t.lane),free=[0,1,2,3].filter(i=>!busy.includes(i));if(!free.length)return;const lane=free[Math.random()*free.length|0];
+const el=document.createElement('div');el.className='tile';el.style.top='-52px';el.textContent=w;document.querySelectorAll('.lane')[lane].appendChild(el);
+G.tiles.push({w,lane,el,top:-52,sp:Math.min(1.2+G.lvl*.35,4.5)})}
+function loop(){if(!G.run||G.paused||G.tut)return;const H=$('track').clientHeight;
+for(const t of [...G.tiles]){t.top+=t.sp;t.el.style.top=t.top+'px';if(t.top+52>=H)miss(t)}}
+function miss(t){t.el.remove();G.tiles=G.tiles.filter(x=>x!==t);G.combo=0;G.lives--;sfx('life');document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');hud();if(G.lives<=0)over()}
+function over(){sfx('over');clearAll();G.run=false;$('fS').textContent=G.score;$('fL').textContent=G.lvl;$('fW').textContent=G.cleared;$('overM').style.display='flex'}
+function marks(v){G.tiles.forEach(t=>{t.el.innerHTML=v&&t.w.startsWith(v)?`<span class="m">${t.w.slice(0,v.length)}</span>${t.w.slice(v.length)}`:t.w})}
+inp.addEventListener('input',()=>{if(!G.run||G.paused)return;const v=inp.value.trim().toLowerCase();
+if(G.tut){if(v=='run'){const r=G.tt.getBoundingClientRect();boom(r.left+r.width/2,r.top+r.height/2,'#00ff66');sfx('kill');G.tt.remove();inp.value='';$('tutMsg').textContent='GREAT JOB! STARTING GAME...';setTimeout(()=>start(1),1200)}return}
+if(!v){marks('');return}
+const hit=G.tiles.filter(t=>t.w==v).sort((a,b)=>b.top-a.top)[0];
+if(hit){kill(hit);inp.value='';marks('')}
+else if(!G.tiles.some(t=>t.w.startsWith(v))){G.combo=0;hud();sfx('miss');inp.classList.add('err');setTimeout(()=>inp.classList.remove('err'),150);inp.value='';marks('')}
+else marks(v)});
+function kill(t){sfx('kill');const r=t.el.getBoundingClientRect();boom(r.left+r.width/2,r.top+r.height/2,'#00f0ff');
+G.combo++;const pts=10*t.w.length*Math.min(G.combo,10);G.score+=pts;G.cleared++;flt(r.left+r.width/2,r.top,'+'+pts);
+t.el.remove();G.tiles=G.tiles.filter(x=>x!==t);hud();
+const u=U();if(u){u.tw++;if(G.score>u.hs)u.hs=G.score;save()}
+if(G.cleared>=15)clear()}
+function clear(){sfx('up');clearInterval(G.sp);clearInterval(G.lp);G.run=false;const n=G.lvl+1,u=U();if(u){if(n>u.hl)u.hl=n;u.gems+=5;save()}
+if(G.lives<3)G.lives++;$('nn').textContent=n;$('nextB').onclick=()=>{cl('nextM');start(n)};$('nextM').style.display='flex'}
+function pause(){if(!G.run&&!G.paused)return;G.paused=!G.paused;$('pauseM').style.display=G.paused?'flex':'none';sfx('click');if(!G.paused)inp.focus()}
+function toLobby(){clearAll();G.run=false;G.paused=false;$('game').style.display='none';$('start').style.display='flex';$('top').style.display='flex';document.body.className='crt w1';lobby()}
+function tutorial(){G.tut=true;G.run=true;G.paused=false;clearAll();$('top').style.display='none';$('start').style.display='none';$('game').style.display='block';
+const el=document.createElement('div');el.className='tile t';el.style.top='120px';el.textContent='run';document.querySelectorAll('.lane')[1].appendChild(el);G.tt=el;
+$('combo').textContent='TUTORIAL';$('tutMsg').style.display='block';$('tutMsg').textContent='TYPE "run" TO DESTROY THE TILE!';inp.value='';inp.focus()}
+addEventListener('keydown',e=>{if(e.key=='Escape'&&$('game').style.display=='block')pause()});
+$('track').addEventListener('pointerdown',()=>inp.focus());
+lobby();
+</script></body></html>
